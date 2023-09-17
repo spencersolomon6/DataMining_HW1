@@ -1,0 +1,66 @@
+Q1: 21
+Q2: [['ham', 'cheese'], ['ham', 'bread'], ['cheese', 'bread']]
+Index(['id', 'userid', 'rating', 'rating-date'], dtype='object')
+3a: 100480507
+3b: 480189
+3c: 1999-11-11 00:00:00-2005-12-31 00:00:00
+4a: 17355
+4b: 8
+5a: 605
+high fidelity
+monty python's the meaning of life: special edition
+american beauty
+roger & me
+eternal sunshine of the spotless mind
+being john malkovich
+vietnam: a television history
+super size me
+lord of the rings: the fellowship of the ring
+this is spinal tap
+the pianist
+the silence of the lambs
+sideways
+whale rider
+garden state
+bowling for columbine
+gandhi
+apocalypse now redux
+to die for
+monty python's life of brian
+the manchurian candidate
+memento
+amelie
+apocalypse now
+the usual suspects
+lord of the rings: the two towers: extended edition
+the lord of the rings: the fellowship of the ring: extended edition
+touching the void
+minority report
+the royal tenenbaums
+election
+good will hunting
+l.a. confidential
+taxi driver
+lord of the rings: the two towers
+cabaret
+adaptation
+the accused
+lost in translation
+boys don't cry
+to be and to have
+schindler's list
+raging bull
+lord of the rings: the return of the king
+monty python and the holy grail
+raising arizona
+the shawshank redemption: special edition
+harold and maude
+downfall
+lord of the rings: the return of the king: extended edition
+monster
+band of brothers
+three kings
+unforgiven
+maria full of grace
+days of wine and roses
+shakespeare in love

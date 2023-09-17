@@ -4,6 +4,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 import pandas as pd
 from datetime import datetime
 from collections import Counter
+import os
 
 # Question 1
 def cardinality_items(filename):
@@ -11,7 +12,7 @@ def cardinality_items(filename):
   Takes a filename "*.csv" and returns an integer
   '''
 
-  data = open(DATA_DIR + filename, 'r').readlines()
+  data = open(filename, 'r').readlines()
 
   expanded_data  = []
   for line in data:
@@ -51,28 +52,36 @@ print(f"Q2: {test_itemset}")
 
 # Question 3
 def preprocess_combined_netflix_data():
-  data = pd.DataFrame(columns=['id', 'rating', 'rating-date'])
+  if not os.path.exists("NetflixData/combined_data.csv"):
+    write_combined_csv()
 
-  for i in range(1, 5):
-    filename = DATA_DIR + f"NetflixData/combined_data_{i}.txt"
-    f = open(filename, 'r').readlines()
+  data = pd.read_csv("NetflixData/combined_data.csv", names=['id', "userid", 'rating', 'rating-date'], header=None)
 
-    current_data = {}
-    for line in f:
-      if f":" in line.strip():
-        id = line.split(':')[0].strip()
-        print(f'Processing results for movie #{id}')
-        continue
-
-      current_line = line.split(",")
-      current_data['id'] = id
-      current_data['userid'] = int(current_line[0])
-      current_data['rating'] = int(current_line[1])
-      current_data['rating-date'] = None if current_line[1] == 'NULL' else datetime.strptime(current_line[2].strip(), "%Y-%m-%d")
-
-      data = data.append(current_data, ignore_index=True)
+  print(data.columns)
 
   return data
+
+def write_combined_csv():
+  new_csv = open(f"NetflixData/combined_data.csv", 'w')
+
+  for i in range(1, 5):
+    current_data = list()
+    filename = f"NetflixData/combined_data_{i}.txt"
+    with open(filename, 'r') as f:
+
+      for line in f:
+        if f":" in line.strip():
+          id = int(line.split(':')[0].strip())
+
+          if id % 500 == 0:
+            print(f'Processing results for movie #{id}')
+          continue
+
+        current_line = line.split(',')
+
+        rating_date = None if current_line[2] == 'NULL' else datetime.strptime(current_line[2].strip(), "%Y-%m-%d")
+        new_csv.write(f'{id},{current_line[0]},{current_line[1]},{rating_date}\n')
+
 
 combined_data = preprocess_combined_netflix_data()
 
@@ -90,17 +99,18 @@ def preprocess_movie_titles():
   cols = ['id', 'release-year', 'title']
   data = pd.DataFrame(columns=cols)
 
-  filename = DATA_DIR +  "NetflixData/movie_titles.csv"
-  f = open(filename, 'r', encoding='cp1252').readlines()
+  filename =  "NetflixData/movie_titles.csv"
+  with open(filename, 'r', encoding='cp1252') as f:
 
-  current_data = {}
-  for line in f:
-    current_line = line.split(',')
-    current_data['id'] = int(current_line[0])
-    current_data['release-year'] = None if current_line[1] == 'NULL' else datetime.strptime(current_line[1], '%Y')
-    current_data['title'] = current_line[2].strip().lower()
+    for line in f:
+      current_data = {}
 
-    data = data.append(current_data, ignore_index=True)
+      current_line = line.split(',')
+      current_data['id'] = int(current_line[0])
+      current_data['release-year'] = None if current_line[1] == 'NULL' else datetime.strptime(current_line[1], '%Y')
+      current_data['title'] = ''.join(current_line[2:]).strip().lower()
+
+      data = data.append(current_data, ignore_index=True)
 
   return data
 
@@ -118,10 +128,9 @@ ratings_counts = Counter(combined_data['userid'])
 filtered_counts = {userid: count for userid, count in ratings_counts.items() if count == 200}
 print(f'5a: {len(filtered_counts)}')
 
-most_liked_titles = set()
-for userid in filtered_counts.keys():
-  most_liked_movies = combined_data['userid' == userid and 'rating' == 5]
-  most_liked_titles.append(movie_titles[most_liked_movies['id']][0]['title'])
+min_user =  min(filtered_counts.keys())
+five_star_movies = combined_data[combined_data['userid'] == min_user][combined_data['rating'] == 5]
 
-for title in most_liked_titles:
-  print(f'title%n')
+print('5b:\n')
+for i, movie in five_star_movies.iterrows():
+  print(movie_titles[movie_titles['id'] == movie['id']]['title'].values[0])
